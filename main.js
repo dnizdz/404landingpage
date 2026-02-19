@@ -20,6 +20,7 @@
   const favicon = byId("favicon");
   const brandNav = byId("brandNav");
   const langSwitch = byId("langSwitch");
+  const menuToggle = byId("menuToggle");
   const hero = byId("hero");
   const about = byId("about");
   const projectsSection = byId("projects");
@@ -68,7 +69,8 @@
     .map((item) => `<a href="${item.href}">${item.label}</a>`)
     .join("");
 
-  const heroTitle = `${brand.name || ""} — ${brand.tagline || ""}`.trim();
+  const heroTitle = brand.name || "";
+  const heroTagline = brand.tagline || "";
   const socialButtons = [
     { label: "Instagram", url: normalizeUrl(brand.instagram) },
     { label: "Threads", url: normalizeUrl(brand.threads) }
@@ -109,11 +111,32 @@
     }
   }
 
+  if (menuToggle && brandNav) {
+    const setMenuState = (open) => {
+      document.body.dataset.menuOpen = open ? "true" : "false";
+      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = document.body.dataset.menuOpen === "true";
+      setMenuState(!isOpen);
+    });
+
+    brandNav.addEventListener("click", (event) => {
+      if (event.target && event.target.tagName === "A") {
+        setMenuState(false);
+      }
+    });
+
+    setMenuState(false);
+  }
+
   window.setLanguage = setLanguage;
 
   hero.innerHTML = `
     <div>
       <h1>${heroTitle}</h1>
+      ${heroTagline ? `<h2 class="hero-tagline">${heroTagline}</h2>` : ""}
       <p data-lang="id">${descriptionId}</p>
       <p data-lang="en">${descriptionEn}</p>
       <div class="cta">${socialButtons}</div>
@@ -166,7 +189,7 @@
       return `
         <article class="project-card">
           <h3 data-lang="id">${project.title || "Untitled Engagement"}</h3>
-          ${project.titleEn ? `<div class="project-title-en" data-lang="en">${project.titleEn}</div>` : ""}
+          ${project.titleEn ? `<h3 class="project-title-en" data-lang="en">${project.titleEn}</h3>` : ""}
           ${
             project.description
               ? `<p data-lang="id">${project.description}</p>`
