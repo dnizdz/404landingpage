@@ -54,6 +54,13 @@ header.header {
   flex-wrap: wrap;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .brand {
   font-size: 20px;
   font-weight: 600;
@@ -87,6 +94,64 @@ header.header {
 
 .nav a:hover {
   color: var(--accent);
+}
+
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.lang-pill {
+  position: relative;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 6px 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  gap: 4px;
+  min-width: 96px;
+  cursor: pointer;
+}
+
+.lang-option {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  z-index: 1;
+}
+
+.lang-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: calc(50% - 4px);
+  left: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: transform 0.2s ease;
+}
+
+body[data-lang="en"] .lang-thumb {
+  transform: translateX(100%);
+}
+
+body[data-lang="id"] .lang-option[data-lang="id"],
+body[data-lang="en"] .lang-option[data-lang="en"] {
+  color: #fff;
+}
+
+body[data-lang="id"] [data-lang="en"] {
+  display: none;
+}
+
+body[data-lang="en"] [data-lang="id"] {
+  display: none;
 }
 
 main {
@@ -227,6 +292,13 @@ section {
   word-break: break-word;
 }
 
+.project-title-en {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .project-card p {
   color: var(--muted);
   overflow-wrap: anywhere;
@@ -340,6 +412,16 @@ img {
   .nav {
     flex-wrap: wrap;
     gap: 10px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .lang-switch {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .hero {

@@ -9,11 +9,17 @@
     if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed;
     return `https://${trimmed}`;
   };
+  const iconUrls = {
+    email: "https://api.iconify.design/heroicons-solid:envelope.svg?color=%23e6f2ff",
+    instagram: "https://api.iconify.design/simple-icons:instagram.svg?color=%23e6f2ff",
+    threads: "https://api.iconify.design/simple-icons:threads.svg?color=%23e6f2ff"
+  };
 
   const brandName = byId("brandName");
   const brandLogo = byId("brandLogo");
   const favicon = byId("favicon");
   const brandNav = byId("brandNav");
+  const langSwitch = byId("langSwitch");
   const hero = byId("hero");
   const about = byId("about");
   const projectsSection = byId("projects");
@@ -86,10 +92,30 @@
     )
     .join("");
 
+  const descriptionId = brand.description || "";
+  const descriptionEn = brand.descriptionEn || "";
+
+  const setLanguage = (lang) => {
+    document.body.dataset.lang = lang;
+  };
+
+  if (langSwitch) {
+    const langButton = langSwitch.querySelector(".lang-pill");
+    if (langButton) {
+      langButton.addEventListener("click", () => {
+        const current = document.body.dataset.lang || "id";
+        setLanguage(current === "id" ? "en" : "id");
+      });
+    }
+  }
+
+  window.setLanguage = setLanguage;
+
   hero.innerHTML = `
     <div>
       <h1>${heroTitle}</h1>
-      <p>${brand.description || ""}</p>
+      <p data-lang="id">${descriptionId}</p>
+      <p data-lang="en">${descriptionEn}</p>
       <div class="cta">${socialButtons}</div>
     </div>
     <div>
@@ -99,11 +125,16 @@
     </div>
   `;
 
+  const aboutParagraphs = [
+    descriptionId ? `<p class="section-body" data-lang="id">${descriptionId}</p>` : "",
+    descriptionEn ? `<p class="section-body" data-lang="en">${descriptionEn}</p>` : ""
+  ]
+    .filter(Boolean)
+    .join("");
+
   about.innerHTML = `
     <div class="section-title">About</div>
-    <p class="section-body">
-      ${brand.description || ""}
-    </p>
+    ${aboutParagraphs}
   `;
 
   const projectCards = (projects || [])
@@ -134,8 +165,18 @@
 
       return `
         <article class="project-card">
-          <h3>${project.title || "Untitled Engagement"}</h3>
-          <p>${project.description || ""}</p>
+          <h3 data-lang="id">${project.title || "Untitled Engagement"}</h3>
+          ${project.titleEn ? `<div class="project-title-en" data-lang="en">${project.titleEn}</div>` : ""}
+          ${
+            project.description
+              ? `<p data-lang="id">${project.description}</p>`
+              : ""
+          }
+          ${
+            project.descriptionEn
+              ? `<p data-lang="en">${project.descriptionEn}</p>`
+              : ""
+          }
           ${docList}
           <div class="project-actions">${actionButtons}</div>
         </article>
@@ -152,16 +193,16 @@
 
   const contactItems = [
     contact?.email
-      ? `<div class="contact-card"><h4>Email</h4><a href="mailto:${contact.email}">${contact.email}</a></div>`
+      ? `<div class="contact-card"><h4>Email</h4><a class="contact-link" href="mailto:${contact.email}"><img class="contact-logo" src="${iconUrls.email}" alt="Email icon" />${contact.email}</a></div>`
       : "",
     contact?.phone
-      ? `<div class="contact-card"><h4>Phone</h4><a href="tel:${contact.phone}">${contact.phone}</a></div>`
+      ? `<div class="contact-card"><h4>Phone</h4><a class="contact-link" href="tel:${contact.phone}">${contact.phone}</a></div>`
       : "",
     brand.instagram
-      ? `<div class="contact-card"><h4>Instagram</h4><a href="${normalizeUrl(brand.instagram)}" target="_blank" rel="noreferrer">${brand.instagram}</a></div>`
+      ? `<div class="contact-card"><h4>Instagram</h4><a class="contact-link" href="${normalizeUrl(brand.instagram)}" target="_blank" rel="noreferrer"><img class="contact-logo" src="${iconUrls.instagram}" alt="Instagram logo" />${brand.instagram}</a></div>`
       : "",
     brand.threads
-      ? `<div class="contact-card"><h4>Threads</h4><a href="${normalizeUrl(brand.threads)}" target="_blank" rel="noreferrer">${brand.threads}</a></div>`
+      ? `<div class="contact-card"><h4>Threads</h4><a class="contact-link" href="${normalizeUrl(brand.threads)}" target="_blank" rel="noreferrer"><img class="contact-logo" src="${iconUrls.threads}" alt="Threads logo" />${brand.threads}</a></div>`
       : ""
   ]
     .filter(Boolean)
@@ -174,4 +215,6 @@
 
   const year = new Date().getFullYear();
   footer.textContent = `© ${year} ${brand.name}. All rights reserved.`;
+
+  setLanguage("id");
 })();
