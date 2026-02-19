@@ -27,7 +27,17 @@
   },
   projects: [
     {
-      title: "Simple Landing Page - Draft",
+      title: "2026-02 - Static Landing Page - Draft",
+      titleEn: "2026-02 - Static Landing Page - Draft",
+      description: "Sesuai permintaan dari project owner 'R' untuk membuat website",
+      descriptionEn:
+        "As requested by project owner 'R' to create a website",
+      projectUrl: "rockielp.404advisory.live",
+      sampleDocs: [{ name: "", url: "" }],
+      folderUrl: ""
+    }
+    {
+      title: "2026-02 - Simple Landing Page - Draft",
       titleEn: "Simple Landing Page - Draft",
       description: "Kami menemukan sebuah project pada https://projects.co.id/public/browse_projects/view/e0211d/landing-page-simpel-1-halaman dimana kami mencoba untuk membuatnya",
       descriptionEn:
@@ -36,6 +46,7 @@
       sampleDocs: [{ name: "", url: "" }],
       folderUrl: ""
     }
+
   ],
   contact: {
     email: "404advisory@gmail.com",
