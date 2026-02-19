@@ -74,6 +74,18 @@
     )
     .join("");
 
+  const focusIcons = [
+    { label: "Strategy", icon: "📌" },
+    { label: "Technology", icon: "🧩" },
+    { label: "SOP", icon: "🗂️" },
+    { label: "Delivery", icon: "⚙️" }
+  ]
+    .map(
+      (item) =>
+        `<div class="focus-item"><span class="focus-icon">${item.icon}</span><span>${item.label}</span></div>`
+    )
+    .join("");
+
   hero.innerHTML = `
     <div>
       <h1>${heroTitle}</h1>
@@ -83,6 +95,7 @@
     <div>
       <div class="section-title">Focus</div>
       <p class="section-body">${brand.tagline || ""}</p>
+      <div class="focus-grid">${focusIcons}</div>
     </div>
   `;
 
