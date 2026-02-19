@@ -2,6 +2,13 @@
   const { brand, projects, contact, theme } = window.CONFIG || {};
 
   const byId = (id) => document.getElementById(id);
+  const normalizeUrl = (value) => {
+    if (!value) return "";
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed;
+    return `https://${trimmed}`;
+  };
 
   const brandName = byId("brandName");
   const brandLogo = byId("brandLogo");
@@ -57,8 +64,8 @@
 
   const heroTitle = `${brand.name || ""} — ${brand.tagline || ""}`.trim();
   const socialButtons = [
-    { label: "Instagram", url: brand.instagram },
-    { label: "Threads", url: brand.threads }
+    { label: "Instagram", url: normalizeUrl(brand.instagram) },
+    { label: "Threads", url: normalizeUrl(brand.threads) }
   ]
     .filter((item) => item.url)
     .map(
@@ -91,7 +98,10 @@
     .map((project) => {
       const docs = (project.sampleDocs || [])
         .filter((doc) => doc && doc.name && doc.url)
-        .map((doc) => `<li><a href="${doc.url}" target="_blank" rel="noreferrer">${doc.name}</a></li>`)
+        .map((doc) => {
+          const docUrl = normalizeUrl(doc.url);
+          return `<li><a href="${docUrl}" target="_blank" rel="noreferrer">${doc.name}</a></li>`;
+        })
         .join("");
 
       const docList = docs
@@ -100,10 +110,10 @@
 
       const actionButtons = [
         project.projectUrl
-          ? `<a class="btn" href="${project.projectUrl}" target="_blank" rel="noreferrer">View Project</a>`
+          ? `<a class="btn" href="${normalizeUrl(project.projectUrl)}" target="_blank" rel="noreferrer">View Project</a>`
           : "",
         project.folderUrl
-          ? `<a class="btn secondary" href="${project.folderUrl}" target="_blank" rel="noreferrer">Open Folder</a>`
+          ? `<a class="btn secondary" href="${normalizeUrl(project.folderUrl)}" target="_blank" rel="noreferrer">Open Folder</a>`
           : ""
       ]
         .filter(Boolean)
@@ -135,10 +145,10 @@
       ? `<div class="contact-card"><h4>Phone</h4><a href="tel:${contact.phone}">${contact.phone}</a></div>`
       : "",
     brand.instagram
-      ? `<div class="contact-card"><h4>Instagram</h4><a href="${brand.instagram}" target="_blank" rel="noreferrer">${brand.instagram}</a></div>`
+      ? `<div class="contact-card"><h4>Instagram</h4><a href="${normalizeUrl(brand.instagram)}" target="_blank" rel="noreferrer">${brand.instagram}</a></div>`
       : "",
     brand.threads
-      ? `<div class="contact-card"><h4>Threads</h4><a href="${brand.threads}" target="_blank" rel="noreferrer">${brand.threads}</a></div>`
+      ? `<div class="contact-card"><h4>Threads</h4><a href="${normalizeUrl(brand.threads)}" target="_blank" rel="noreferrer">${brand.threads}</a></div>`
       : ""
   ]
     .filter(Boolean)
