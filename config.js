@@ -27,8 +27,8 @@
   },
   projects: [
     {
-      title: "2026-02 - Static Landing Page - Draft",
-      titleEn: "2026-02 - Static Landing Page - Draft",
+      title: "2026-02 - Static Landing Page - Draft 1",
+      titleEn: "2026-02 - Static Landing Page - Draft 1",
       description: "Sesuai permintaan dari project owner 'R' untuk membuat website",
       descriptionEn:
         "As requested by project owner 'R' to create a website",
