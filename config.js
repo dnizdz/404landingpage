@@ -35,7 +35,7 @@
       projectUrl: "rockielp.404advisory.live",
       sampleDocs: [{ name: "", url: "" }],
       folderUrl: ""
-    }
+    },
     {
       title: "2026-02 - Simple Landing Page - Draft",
       titleEn: "Simple Landing Page - Draft",
