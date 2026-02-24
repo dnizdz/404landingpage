@@ -41,6 +41,15 @@
       projectUrl: "stevenlp.404advisory.live",
       sampleDocs: [{ name: "", url: "" }],
       folderUrl: ""
+    },
+    {
+      title: "2026-02 - PHP Google Drive",
+      titleEn: "2026-02 - PHP Google Drive",
+      description: "Kami menemukan sebuah project pada https://projects.co.id/public/browse_projects/view/70251d/memperbaiki-script-php-player-bypass-google-drive-mp4upload-dan-yourupload dimana kami mencoba untuk membuatnya",
+      descriptionEn: "We found a project at https://projects.co.id/public/browse_projects/view/70251d/memperbaiki-script-php-player-bypass-google-drive-mp4upload-dan-yourupload and attempted to build it.",
+      projectUrl: "phpplayer.404advisory.live",
+      sampleDocs: [{ name: "", url: "" }],
+      folderUrl: ""
     }
   ],
   contact: {
