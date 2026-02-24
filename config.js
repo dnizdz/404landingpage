@@ -44,7 +44,7 @@
     }
   ],
   contact: {
-    email: "404advisory@gmail.com",
+    email: "hello@404advisory.live",
     phone: ""
   }
 };
