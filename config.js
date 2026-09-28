@@ -25,8 +25,8 @@
   },
   projects: [
     {
-      title: "2026-09 - Doomsday ERP System (Demo)",
-      titleEn: "2026-09 - Doomsday ERP System (Demo)",
+      title: "2026-09 - Sample ERP System (Demo)",
+      titleEn: "2026-09 - Sample ERP System (Demo)",
       description: "Mini ERP untuk penjualan bundle: perencanaan kebutuhan komponen dari BOM, stok, dan purchase order, dengan FIFO batch costing.",
       descriptionEn: "Mini ERP for bundle sales: BOM-driven component requirements planning against stock and purchase orders, with FIFO batch costing.",
       projectUrl: "erpdemo.404advisory.live",
