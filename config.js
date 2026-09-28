@@ -29,7 +29,7 @@
       titleEn: "2026-09 - Doomsday ERP System (Demo)",
       description: "Mini ERP untuk penjualan bundle survival-kit: perencanaan kebutuhan komponen dari BOM, stok, dan purchase order, dengan FIFO batch costing.",
       descriptionEn: "Mini ERP for survival-kit bundle sales: BOM-driven component requirements planning against stock and purchase orders, with FIFO batch costing.",
-      projectUrl: "doomsday.404advisory.live",
+      projectUrl: "erpdemo.404advisory.live",
       sampleDocs: [{ name: "", url: "" }],
       folderUrl: ""
     },
