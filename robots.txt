@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://404advisory.live/sitemap.xml

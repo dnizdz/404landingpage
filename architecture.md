@@ -36,14 +36,21 @@ Function-level detail (single-service static site, small enough to enumerate eve
 - External: `fonts.googleapis.com` / `fonts.gstatic.com` (Google Fonts CDN, `@import`-style `<link>` in each HTML file's `<head>`, not in this file itself).
 
 ### index.html
-- Purpose: page shell - header/nav/lang-switch markup, empty `<section>` containers (`#hero`, `#about`, `#projects`, `#contact`) that `main.js` fills, meta/OG tags, Google Fonts `<link>`, skip-to-content link.
+- Purpose: page shell - header/nav/lang-switch markup, empty `<section>` containers (`#hero`, `#about`, `#projects`, `#contact`) that `main.js` fills, meta/OG/Twitter/canonical tags, static `ProfessionalService` JSON-LD block (crawler-visible without JS), Google Fonts `<link>`, skip-to-content link, GA4 `gtag.js` snippet.
 - Depends on (this codebase): `styles.css`, `config.js`, `main.js` (script load order matters: config before main).
 - Called by / Depended on by (this codebase): none.
+- External: GA4 tracking (`googletagmanager.com/gtag/js`, property `G-3FBTWXL6FR`) - see "External system boundaries" below.
 
 ### 404.html
-- Purpose: branded not-found page GitHub Pages serves for any unmatched route. Static markup, no `config.js`/`main.js` dependency (renders even if the config/render pipeline is broken).
+- Purpose: branded not-found page GitHub Pages serves for any unmatched route. Static markup, no `config.js`/`main.js` dependency (renders even if the config/render pipeline is broken). Carries its own copy of the GA4 `gtag.js` snippet so 404 hits are still tracked.
 - Depends on (this codebase): `styles.css` (shares base tokens; page-specific layout is inlined in a `<style>` block rather than added to `styles.css`, since it's the only consumer).
 - Called by / Depended on by (this codebase): none.
+- External: GA4 tracking (same as `index.html`).
+
+### robots.txt / sitemap.xml / llms.txt
+- Purpose: static SEO/LLM-discoverability files served as-is by GitHub Pages. `robots.txt` allows all crawlers and points at `sitemap.xml`. `sitemap.xml` lists the single homepage URL (one-page site with in-page anchors, not separate routes). `llms.txt` is a plain-text/Markdown summary (llmstxt.org convention) of services and project links, mirrored from `config.js` content for LLM answer-engine crawlers that don't execute JS.
+- Depends on (this codebase): none (static, hand-maintained; not generated from `config.js` at build time since there is no build step).
+- Called by / Depended on by (this codebase): none in-repo; consumed externally by search/LLM crawlers.
 
 ## Dependency graph (condensed)
 ```
@@ -53,6 +60,9 @@ styles.css --> 404.html
 main.js --> externalService["api.iconify.design (icon SVGs)"]
 index.html --> externalService2["fonts.googleapis.com / fonts.gstatic.com"]
 404.html --> externalService2
+index.html --> externalService3["googletagmanager.com (GA4 gtag.js)"]
+404.html --> externalService3
+robots.txt --> sitemap.xml
 ```
 
 ## External system boundaries
@@ -61,13 +71,16 @@ index.html --> externalService2["fonts.googleapis.com / fonts.gstatic.com"]
 
 ### index.html / 404.html
 - Web fonts (Outfit, JetBrains Mono) loaded client-side from Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`). One-way, read-only, no auth.
+- Google Analytics 4 (`gtag.js` from `googletagmanager.com`, property `G-3FBTWXL6FR`): page views and events pushed client-side to Google Analytics. One-way, no auth secret in the client snippet (GA4 measurement IDs are not sensitive), but the property itself is tied to the business's own GA account.
 
 ### Deployment
-- GitHub Pages serves the repo root directly at the custom domain in `CNAME`. No CI/build step - a push to the deployed branch is the deploy.
+- GitHub Pages serves the repo root directly at the custom domain in `CNAME` (`404advisory.live`). No CI/build step - a push to `main` on the public GitHub repo (`github.com/dnizdz/404landingpage`) is the deploy.
+- `robots.txt` / `sitemap.xml` / `llms.txt` are crawled externally by search engines and LLM/answer-engine crawlers - no code in this repo calls out to them, they're passive discoverability files.
 
 ## Known gaps / TODO
 - Project titles in `config.js` are internal/dated naming, not polished public case-study copy - deliberate, pending an explicit decision (see `CLAUDE.md`).
 - No automated tests (static content site, no logic to unit-test beyond `main.js` render functions).
+- `llms.txt` and `sitemap.xml` are hand-maintained, not regenerated from `config.js` - update them manually if the project list or brand description changes materially.
 
 ## Last checked
-- 2026-09-28: module boundaries and external calls checked against `config.js`, `main.js`, `styles.css`, `index.html`, `404.html` after the redesign pass (font/theme/icon/grid changes, added `404.html`, added the ERP demo project card).
+- 2026-09-28: module boundaries and external calls checked against `config.js`, `main.js`, `styles.css`, `index.html`, `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt` after adding GA4 analytics and SEO/LLM-discoverability files.

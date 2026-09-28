@@ -1,0 +1,22 @@
+# 404 Advisory
+
+> Business and technology consulting firm. Team with 10+ years of experience as consultants at global firms including Ernst & Young and Accenture, with hands-on experience as business operators. Supports IT strengthening, SOP development, business consulting, and structured operational transformation.
+
+404 Advisory helps businesses build IT systems, define standard operating procedures, and run structured operational transformation projects. Past work spans custom ERP/business systems, landing pages, and backend/automation scripts.
+
+## Services
+- IT strengthening / systems build (custom ERP, internal tools, automation)
+- SOP (standard operating procedure) development
+- Business consulting
+- Structured operational transformation
+
+## Project examples
+- [Doomsday ERP System (Demo)](https://doomsday.404advisory.live): Mini ERP for survival-kit bundle sales - BOM-driven component requirements planning against stock and purchase orders, FIFO batch costing.
+- [Static Landing Page - Draft 1](https://rockielp.404advisory.live): Landing page built per client request.
+- [Simple Landing Page - Draft](https://stevenlp.404advisory.live): One-page landing site.
+- [PHP Google Drive Player](https://phpplayer.404advisory.live): PHP script project (media player / bypass tooling).
+
+## Contact
+- Email: hello@404advisory.live
+- Instagram: https://instagram.com/404advisory
+- Threads: https://www.threads.com/@404advisory
