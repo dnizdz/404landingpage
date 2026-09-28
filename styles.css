@@ -6,7 +6,8 @@
   --border: #d6d9d3;
   --accent: #0f3b2d;
   --accent-2: #1f5a45;
-  --shadow: 0 12px 40px rgba(17, 23, 22, 0.08);
+  --shadow-rgb: 17, 23, 22;
+  --shadow: 0 12px 40px rgba(var(--shadow-rgb), 0.14);
   --radius: 18px;
   --max: 1120px;
   --base-font: 16px;
@@ -19,6 +20,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   width: 100%;
@@ -26,11 +31,49 @@ body {
 }
 
 body {
-  font-family: "Neue Haas Grotesk Text", "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+  font-family: "Outfit", "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   font-size: var(--base-font);
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(ellipse 900px 600px at 12% -10%, rgba(var(--shadow-rgb), 0.10), transparent 60%),
+    radial-gradient(ellipse 800px 500px at 100% 20%, rgba(var(--shadow-rgb), 0.06), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 12px;
+  z-index: 100;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .page {
@@ -233,7 +276,9 @@ section {
 .hero h1 {
   font-size: clamp(32px, 5vw, 54px);
   line-height: 1.1;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
   margin-bottom: 16px;
 }
 
@@ -285,6 +330,10 @@ section {
   color: #fff;
 }
 
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
 .btn.secondary:hover {
   background: var(--accent);
 }
@@ -292,6 +341,10 @@ section {
 .about {
   display: grid;
   gap: 14px;
+}
+
+.about .section-body {
+  max-width: 68ch;
 }
 
 .section-title {
@@ -327,12 +380,14 @@ section {
 }
 
 .focus-icon {
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
   width: 100%;
 }
@@ -345,8 +400,14 @@ section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 280px;
   min-width: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
 }
 
 .project-card h3 {

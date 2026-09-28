@@ -14,6 +14,14 @@
     instagram: "https://api.iconify.design/simple-icons:instagram.svg?color=%23e6f2ff",
     threads: "https://api.iconify.design/simple-icons:threads.svg?color=%23e6f2ff"
   };
+  const hexToRgb = (hex) => {
+    if (!hex) return null;
+    const clean = hex.replace("#", "");
+    const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+    const num = parseInt(full, 16);
+    if (Number.isNaN(num)) return null;
+    return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
+  };
 
   const brandName = byId("brandName");
   const brandLogo = byId("brandLogo");
@@ -43,6 +51,8 @@
   if (colors.border) document.documentElement.style.setProperty("--border", colors.border);
   if (colors.accent) document.documentElement.style.setProperty("--accent", colors.accent);
   if (colors.accent2) document.documentElement.style.setProperty("--accent-2", colors.accent2);
+  const shadowRgb = hexToRgb(colors.bg) || hexToRgb(colors.card);
+  if (shadowRgb) document.documentElement.style.setProperty("--shadow-rgb", shadowRgb);
 
   if (brand.name) {
     document.title = brand.name;
@@ -82,15 +92,16 @@
     )
     .join("");
 
+  const focusIconColor = encodeURIComponent(colors.accent || "#26c6f5");
   const focusIcons = [
-    { label: "Strategy", icon: "📌" },
-    { label: "Technology", icon: "🧩" },
-    { label: "SOP", icon: "🗂️" },
-    { label: "Delivery", icon: "⚙️" }
+    { label: "Strategy", icon: "heroicons-outline:presentation-chart-line" },
+    { label: "Technology", icon: "heroicons-outline:cpu-chip" },
+    { label: "SOP", icon: "heroicons-outline:clipboard-document-list" },
+    { label: "Delivery", icon: "heroicons-outline:rocket-launch" }
   ]
     .map(
       (item) =>
-        `<div class="focus-item"><span class="focus-icon">${item.icon}</span><span>${item.label}</span></div>`
+        `<div class="focus-item"><img class="focus-icon" src="https://api.iconify.design/${item.icon}.svg?color=${focusIconColor}" alt="" /><span>${item.label}</span></div>`
     )
     .join("");
 
