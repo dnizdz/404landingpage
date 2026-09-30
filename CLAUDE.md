@@ -5,6 +5,7 @@ Static bilingual (ID/EN) portfolio/landing site for 404 Advisory (business & tec
 ## What's where
 - `index.html`, `main.js`, `styles.css`, `config.js`, `assets/`, `CNAME`, `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt` — the deployed site itself, lives at repo root (GitHub Pages serves from root; do not move these into `Brief/`). No local `tracking.js` — see Analytics section below, it's loaded from an external URL now.
 - `Brief/` — write-ups/decisions not part of the deployed site (empty for now).
+- `.claude/agents/landing-page-designer.md` — project subagent for design/UI work, points back to this file. Gitignored (`.claude/` is not pushed to the public repo), so it exists only in the local checkout; recreate it from this description if missing. Media hosting details (R2 bucket, token scope) live in `Personal/Personal Server Management/services.md`.
 - `Handover/` — running handover doc.
 
 ## Editing content
