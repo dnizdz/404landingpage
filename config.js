@@ -31,7 +31,16 @@
       descriptionEn: "Mini ERP for bundle sales: BOM-driven component requirements planning against stock and purchase orders, with FIFO batch costing.",
       projectUrl: "erpdemo.404advisory.live",
       sampleDocs: [{ name: "", url: "" }],
-      folderUrl: ""
+      folderUrl: "",
+      // Optional demo media (Cloudflare R2, served via media.404advisory.live).
+      // Card gets hover poster + click-to-play video only when videoUrl is set.
+      posterUrl: "https://media.404advisory.live/erpdemo/erpdemo-brag-poster.jpg",
+      videoUrl: "https://media.404advisory.live/erpdemo/erpdemo-brag.mp4",
+      mediaLabels: {
+        play: { id: "Putar demo", en: "Play demo" },
+        open: { id: "Buka aplikasi", en: "Open app" },
+        access: { id: "Klik di sini untuk akses", en: "Click here to access" }
+      }
     },
     {
       title: "2026-02 - Static Landing Page - Draft 1",

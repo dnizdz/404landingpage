@@ -60,6 +60,7 @@ body::before {
 
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: 56px;
@@ -87,7 +88,7 @@ header.header {
   padding-top: 24px;
   padding-left: 24px;
   padding-right: 24px;
-  box-shadow: 0 10px 24px rgba(17, 23, 22, 0.08);
+  box-shadow: 0 10px 24px rgba(var(--shadow-rgb), 0.35);
 }
 
 .header-actions {
@@ -220,7 +221,7 @@ body[data-lang="en"] .lang-thumb {
 
 body[data-lang="id"] .lang-option[data-lang="id"],
 body[data-lang="en"] .lang-option[data-lang="en"] {
-  color: #fff;
+  color: var(--bg);
 }
 
 body[data-lang="id"] [data-lang="en"] {
@@ -294,8 +295,9 @@ section {
   border-radius: 999px;
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
@@ -307,9 +309,9 @@ section {
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(15, 59, 45, 0.18);
+  box-shadow: 0 10px 20px rgba(var(--shadow-rgb), 0.45);
   background: var(--accent-2);
-  color: #fff;
+  color: var(--bg);
 }
 
 .btn:active {
@@ -432,6 +434,162 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+/* Media cards (project has videoUrl in config.js) */
+.project-card.has-media {
+  cursor: pointer;
+}
+
+.project-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.project-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--bg);
+  transform: scale(1.04);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-trigger {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.media-trigger::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 55%, rgba(var(--shadow-rgb), 0.7), rgba(var(--shadow-rgb), 0.94) 70%),
+    rgba(var(--shadow-rgb), 0.5);
+  transition: opacity 0.35s ease;
+}
+
+.media-trigger:focus-visible {
+  outline-offset: -4px;
+  border-radius: 10px;
+}
+
+.media-play,
+.media-hint {
+  position: relative;
+  z-index: 1;
+}
+
+.media-play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 10px 24px rgba(var(--shadow-rgb), 0.55);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-play::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* optical nudge: triangle centroid sits right of its box center */
+  transform: translate(-38%, -50%);
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent var(--bg);
+}
+
+.media-hint {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 8px rgba(var(--shadow-rgb), 0.8);
+}
+
+@media (hover: hover) {
+  .project-card.has-media:hover .media-trigger::before,
+  .project-card.has-media:focus-within .media-trigger::before {
+    opacity: 0.35;
+  }
+
+  .project-card.has-media:hover .project-video,
+  .project-card.has-media:focus-within .project-video {
+    transform: scale(1);
+  }
+
+  .project-card.has-media:hover .media-play {
+    transform: scale(1.06);
+  }
+}
+
+@media (hover: none) {
+  .media-trigger::before {
+    opacity: 0.45;
+  }
+
+  .project-video {
+    transform: none;
+  }
+}
+
+.project-card[data-media-state="active"] .media-trigger {
+  display: none;
+}
+
+.project-card[data-media-state="active"] .project-video {
+  transform: none;
+}
+
+.media-cta {
+  align-self: flex-start;
+  animation: media-cta-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-cta[hidden] {
+  display: none;
+}
+
+.media-cta-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .media-cta-pointer {
+    display: none;
+  }
+
+  .media-cta-touch {
+    display: inline;
+  }
+}
+
+@keyframes media-cta-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .contact-grid {
@@ -592,5 +750,25 @@ img {
   .btn {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .btn:hover,
+  .project-card:hover,
+  .project-video {
+    transform: none;
   }
 }

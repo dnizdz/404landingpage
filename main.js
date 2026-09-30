@@ -97,7 +97,7 @@
     { label: "Strategy", icon: "heroicons-outline:presentation-chart-line" },
     { label: "Technology", icon: "heroicons-outline:cpu-chip" },
     { label: "SOP", icon: "heroicons-outline:clipboard-document-list" },
-    { label: "Delivery", icon: "heroicons-outline:rocket-launch" }
+    { label: "Delivery", icon: "heroicons-outline:lightning-bolt" }
   ]
     .map(
       (item) =>
@@ -197,8 +197,42 @@
         .filter(Boolean)
         .join("");
 
+      const appUrl = normalizeUrl(project.projectUrl);
+      const hasMedia = Boolean(project.videoUrl);
+      const labels = project.mediaLabels || {};
+      const label = (key, lang, fallback) => (labels[key] && labels[key][lang]) || fallback;
+      const bilingual = (key, fallbackId, fallbackEn) =>
+        `<span data-lang="id">${label(key, "id", fallbackId)}</span><span data-lang="en">${label(key, "en", fallbackEn)}</span>`;
+
+      const mediaBlock = hasMedia
+        ? `
+          <div class="project-media">
+            <video class="project-video" preload="none" playsinline
+              ${project.posterUrl ? `poster="${project.posterUrl}"` : ""}
+              aria-label="${project.titleEn || project.title || "Project"} - demo video">
+              <source src="${project.videoUrl}" type="video/mp4" />
+            </video>
+            <button class="media-trigger" type="button">
+              <span class="media-play" aria-hidden="true"></span>
+              <span class="media-hint">${bilingual("play", "Putar demo", "Play demo")}</span>
+            </button>
+          </div>
+          ${
+            appUrl
+              ? `<a class="btn media-cta" href="${appUrl}" target="_blank" rel="noreferrer" hidden>
+              <span class="media-cta-pointer">${bilingual("open", "Buka aplikasi", "Open app")}</span>
+              <span class="media-cta-touch">${bilingual("access", "Klik di sini untuk akses", "Click here to access")}</span>
+            </a>`
+              : ""
+          }
+        `
+        : "";
+
       return `
-        <article class="project-card">
+        <article class="project-card${hasMedia ? " has-media" : ""}"${
+          hasMedia ? ` data-media-state="idle"${appUrl ? ` data-app-url="${appUrl}"` : ""}` : ""
+        }>
+          ${mediaBlock}
           <h3 data-lang="id">${project.title || "Untitled Engagement"}</h3>
           ${project.titleEn ? `<h3 class="project-title-en" data-lang="en">${project.titleEn}</h3>` : ""}
           ${
@@ -224,6 +258,44 @@
       ${projectCards || "<p class=\"section-body\">No projects added yet.</p>"}
     </div>
   `;
+
+  // Media cards: first click/tap plays the demo video and reveals the app CTA,
+  // second click on the card (outside the video/links) opens the app.
+  const reducedMotion = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)")
+    : { matches: false };
+
+  const activateMedia = (card) => {
+    const video = card.querySelector(".project-video");
+    const cta = card.querySelector(".media-cta");
+    card.dataset.mediaState = "active";
+    if (cta) cta.hidden = false;
+    if (video) {
+      video.controls = true;
+      if (!reducedMotion.matches) {
+        video.muted = true;
+        const playing = video.play();
+        if (playing && typeof playing.catch === "function") playing.catch(() => {});
+      }
+    }
+    if (cta) {
+      cta.focus({ preventScroll: true });
+    } else if (video) {
+      video.focus({ preventScroll: true });
+    }
+  };
+
+  projectsSection.addEventListener("click", (event) => {
+    const card = event.target.closest(".project-card.has-media");
+    if (!card) return;
+    if (event.target.closest("a, video")) return;
+    if (card.dataset.mediaState !== "active") {
+      activateMedia(card);
+      return;
+    }
+    const url = card.dataset.appUrl;
+    if (url) window.open(url, "_blank", "noreferrer");
+  });
 
   const contactItems = [
     contact?.email

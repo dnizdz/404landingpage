@@ -14,6 +14,7 @@ Function-level detail (single-service static site, small enough to enumerate eve
 
 ### config.js
 - Purpose: data-only. Defines `window.CONFIG` - brand info, theme color tokens, the `projects` array (portfolio cards), and contact info. No functions, no logic.
+- Optional per-project media fields: `posterUrl`, `videoUrl` (absolute URLs on `media.404advisory.live`, Cloudflare R2) and `mediaLabels` (`play` / `open` / `access`, each `{ id, en }`). A project with `videoUrl` renders as a media card; projects without it render unchanged.
 - Depends on (this codebase): none.
 - Called by / Depended on by (this codebase): `main.js` reads `window.CONFIG` at load.
 
@@ -25,13 +26,17 @@ Function-level detail (single-service static site, small enough to enumerate eve
   - `hexToRgb(hex)` - converts a `#rrggbb`/`#rgb` theme color to an `"r, g, b"` string; feeds the `--shadow-rgb` CSS variable so card/button shadows tint to the active theme background instead of a hardcoded color.
   - `setLanguage(lang)` - sets `document.body.dataset.lang`, which `styles.css` uses to show/hide `[data-lang="id"]` / `[data-lang="en"]` elements. Exposed as `window.setLanguage`.
   - Inline render blocks (not separate named functions) build: header brand/nav, hero (title, tagline, description, social CTAs, Focus icon grid), about section, project cards grid (`projectsSection.innerHTML`), contact cards grid, footer year line.
+  - Media card module (added 2026-10-01): project card render adds a `.project-media` stage (`<video preload="none" playsinline poster=...>` + `.media-trigger` button) and a hidden `.media-cta` link when `videoUrl` is set; card carries `data-media-state` (`idle` / `active`) and `data-app-url`.
+  - `activateMedia(card)` - sets state `active`, reveals `.media-cta`, enables video controls, starts muted autoplay unless `prefers-reduced-motion: reduce`, moves focus to the CTA.
+  - Delegated click listener on `#projects` - on a media card, first click (or Enter/Space on `.media-trigger`) calls `activateMedia`; a later click on the card outside `a`/`video` opens `data-app-url` in a new tab (`window.open(..., "_blank", "noreferrer")`, same as card links). Clicks on the video go to native controls.
 - Depends on (this codebase): `config.js` (`window.CONFIG`), `index.html` (element IDs it queries: `brandName`, `brandLogo`, `favicon`, `brandNav`, `langSwitch`, `menuToggle`, `hero`, `about`, `projects`, `contact`, `footer`), `styles.css` (CSS custom properties it sets: `--base-font`, `--bg`, `--text`, `--muted`, `--card`, `--border`, `--accent`, `--accent-2`, `--shadow-rgb`).
 - Called by / Depended on by (this codebase): none (top-level script, nothing else in-repo calls into it).
-- External: fetches icon SVGs at render time from `api.iconify.design` (heroicons/simple-icons sets) for the email/Instagram/Threads contact icons and the hero Focus-area icons.
+- External: fetches icon SVGs at render time from `api.iconify.design` (heroicons/simple-icons sets) for the email/Instagram/Threads contact icons and the hero Focus-area icons. Renders `<video>`/poster markup pointing at `media.404advisory.live` (Cloudflare R2) for media cards.
 
 ### styles.css
 - Purpose: all visual styling and the dark-navy theme; CSS custom properties (`:root` block) are the theme's single source of truth and get overridden at runtime by `main.js` from `config.js` theme colors. Loads "Outfit" (body/headings) and "JetBrains Mono" (404 page numeral) from Google Fonts.
-- Depends on (this codebase): none directly, but its selectors (`.hero`, `.projects-grid`, `.project-card`, `.contact-grid`, etc.) are a contract with the markup `main.js` generates.
+- Depends on (this codebase): none directly, but its selectors (`.hero`, `.projects-grid`, `.project-card`, `.contact-grid`, `.project-media`, `.media-trigger`, `.media-cta`, `[data-media-state]`, etc.) are a contract with the markup `main.js` generates.
+- Media card styling: poster veil lifts on hover/focus-within under `(hover: hover)`; under `(hover: none)` the veil is lighter by default and the CTA shows the touch label (`access`) instead of the pointer label (`open`). A `prefers-reduced-motion: reduce` block disables transitions/animations and hover transforms site-wide.
 - Called by / Depended on by (this codebase): `index.html`, `404.html` (both `<link>` it directly).
 - External: `fonts.googleapis.com` / `fonts.gstatic.com` (Google Fonts CDN, `@import`-style `<link>` in each HTML file's `<head>`, not in this file itself).
 
@@ -58,6 +63,7 @@ config.js --> main.js --> index.html (DOM)
 styles.css --> index.html
 styles.css --> 404.html
 main.js --> externalService["api.iconify.design (icon SVGs)"]
+main.js --> externalService4["media.404advisory.live (Cloudflare R2: poster + demo video)"]
 index.html --> externalService2["fonts.googleapis.com / fonts.gstatic.com"]
 404.html --> externalService2
 index.html --> externalService3["googletagmanager.com (GA4 gtag.js)"]
@@ -68,6 +74,8 @@ robots.txt --> sitemap.xml
 ## External system boundaries
 ### main.js
 - Icon SVGs fetched client-side from `api.iconify.design` (heroicons-outline, simple-icons) for social/contact/focus-area icons. One-way, read-only, no auth.
+
+- Demo media (poster JPG, MP4 video) served from Cloudflare R2 bucket `404-media` via custom domain `media.404advisory.live`, referenced by absolute URL from `config.js` project fields. One-way, read-only, public, no auth. Files are NOT stored in this repo. Video uses `preload="none"`, so the MP4 (~29MB) is only range-requested after the visitor plays it; the poster (~190KB) loads with the page.
 
 ### index.html / 404.html
 - Web fonts (Outfit, JetBrains Mono) loaded client-side from Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`). One-way, read-only, no auth.
@@ -83,4 +91,5 @@ robots.txt --> sitemap.xml
 - `llms.txt` and `sitemap.xml` are hand-maintained, not regenerated from `config.js` - update them manually if the project list or brand description changes materially.
 
 ## Last checked
+- 2026-10-01: checked against `config.js`, `main.js`, `styles.css` after adding the ERP Demo media card (R2-hosted poster + video, hover/click module) and a redesign pass (theme-driven shadows, accent-button contrast, reduced-motion, broken Focus icon fixed).
 - 2026-09-28: module boundaries and external calls checked against `config.js`, `main.js`, `styles.css`, `index.html`, `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt` after adding GA4 analytics and SEO/LLM-discoverability files.
