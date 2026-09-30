@@ -12,3 +12,6 @@ Thumbs.db
 # Env
 .env
 .env.*
+
+# Claude Code local tooling
+.claude/
